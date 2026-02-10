@@ -1,43 +1,51 @@
-import { ArrowUpRight, ArrowDownRight, Users, DollarSign, Activity, ShoppingCart } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Users, DollarSign, Activity, ShoppingCart, LucideIcon } from "lucide-react";
 
-export const kpiData = [
-    {
-        title: "Total Revenue",
-        value: "$45,231.89",
-        change: "+20.1%",
-        trend: "up",
-        icon: DollarSign,
-        color: "text-emerald-600",
-        bgColor: "bg-emerald-50",
-    },
-    {
-        title: "Active Users",
-        value: "+2,350",
-        change: "+180.1%",
-        trend: "up",
-        icon: Users,
-        color: "text-indigo-600",
-        bgColor: "bg-indigo-50",
-    },
-    {
-        title: "New Customers",
-        value: "+12,234",
-        change: "+19%",
-        trend: "up",
-        icon: ShoppingCart,
-        color: "text-blue-600",
-        bgColor: "bg-blue-50",
-    },
-    {
-        title: "Bounce Rate",
-        value: "42.3%",
-        change: "-5.4%",
-        trend: "down", // Good for bounce rate
-        icon: Activity,
-        color: "text-rose-600",
-        bgColor: "bg-rose-50",
-    },
-];
+export const kpiData: {
+    title: string;
+    value: string;
+    change: string;
+    trend: "up" | "down";
+    icon: LucideIcon;
+    color: string;
+    bgColor: string;
+}[] = [
+        {
+            title: "Total Revenue",
+            value: "$45,231.89",
+            change: "+20.1%",
+            trend: "up",
+            icon: DollarSign,
+            color: "text-emerald-600",
+            bgColor: "bg-emerald-50",
+        },
+        {
+            title: "Active Users",
+            value: "+2,350",
+            change: "+180.1%",
+            trend: "up",
+            icon: Users,
+            color: "text-indigo-600",
+            bgColor: "bg-indigo-50",
+        },
+        {
+            title: "New Customers",
+            value: "+12,234",
+            change: "+19%",
+            trend: "up",
+            icon: ShoppingCart,
+            color: "text-blue-600",
+            bgColor: "bg-blue-50",
+        },
+        {
+            title: "Bounce Rate",
+            value: "42.3%",
+            change: "-5.4%",
+            trend: "down", // Good for bounce rate
+            icon: Activity,
+            color: "text-rose-600",
+            bgColor: "bg-rose-50",
+        },
+    ];
 
 export const revenueData = [
     { name: "Jan", total: 1500 },

@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/Card";
 import { recentTransactions } from "@/data/dashboard-data";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"; // We need to create this or use a simple img tag
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"; // Removed unused import
 
 export function RecentSales() {
     return (
@@ -64,10 +64,10 @@ export function RecentSales() {
                                 <td className="py-4 text-right">
                                     <span
                                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${trx.status === "Completed"
-                                                ? "bg-emerald-50 text-emerald-600"
-                                                : trx.status === "Processing"
-                                                    ? "bg-blue-50 text-blue-600"
-                                                    : "bg-rose-50 text-rose-600"
+                                            ? "bg-emerald-50 text-emerald-600"
+                                            : trx.status === "Processing"
+                                                ? "bg-blue-50 text-blue-600"
+                                                : "bg-rose-50 text-rose-600"
                                             }`}
                                     >
                                         {trx.status}
