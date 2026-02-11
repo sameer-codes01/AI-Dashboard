@@ -28,8 +28,8 @@ export function StatCard({
                 </div>
                 <div
                     className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${trend === "up"
-                            ? "bg-emerald-50 text-emerald-600"
-                            : "bg-rose-50 text-rose-600"
+                        ? "bg-emerald-50 text-emerald-600"
+                        : "bg-rose-50 text-rose-600"
                         }`}
                 >
                     {change}
@@ -41,8 +41,8 @@ export function StatCard({
                 </div>
             </div>
             <div className="mt-4">
-                <p className="text-sm font-medium text-slate-500">{title}</p>
-                <h3 className="text-2xl font-black text-slate-900 mt-1 tracking-tight">
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{title}</p>
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1 tracking-tight">
                     {value}
                 </h3>
             </div>

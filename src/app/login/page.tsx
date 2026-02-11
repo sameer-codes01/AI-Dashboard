@@ -13,12 +13,12 @@ export default function LoginPage() {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 px-4 py-12 sm:px-6 lg:px-8">
-            <div className="w-full max-w-md space-y-8 bg-white/95 backdrop-blur-sm p-10 rounded-2xl shadow-2xl border border-white/20">
+            <div className="w-full max-w-md space-y-8 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm p-10 rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700 transition-all">
                 <div className="text-center">
-                    <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                    <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
                         Welcome Back
                     </h2>
-                    <p className="mt-3 text-sm text-gray-600">
+                    <p className="mt-3 text-sm text-gray-600 dark:text-slate-400">
                         Sign in to access your dashboard
                     </p>
                 </div>
@@ -26,28 +26,28 @@ export default function LoginPage() {
                 <form className="mt-8 space-y-6" action={formAction}>
                     <div className="space-y-4">
                         <div className="group">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 transition-colors group-focus-within:text-blue-600">Email Address</label>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400">Email Address</label>
                             <input
                                 id="email"
                                 name="email"
                                 type="email"
                                 autoComplete="email"
                                 required
-                                className="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50/50 py-3 px-4 text-gray-900 shadow-sm transition-all focus:border-blue-500 focus:ring-blue-500 focus:bg-white sm:text-sm outline-none border ring-1 ring-gray-200"
+                                className="mt-1 block w-full rounded-xl border-gray-300 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-800 py-3 px-4 text-gray-900 dark:text-white shadow-sm transition-all focus:border-blue-500 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 sm:text-sm outline-none border ring-1 ring-gray-200 dark:ring-slate-700 placeholder:text-gray-400 dark:placeholder:text-slate-500"
                                 placeholder="admin@example.com"
                             />
                         </div>
                         <div className="group">
                             <div className="flex items-center justify-between">
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 transition-colors group-focus-within:text-blue-600">Password</label>
-                                <a href="#" className="text-xs font-semibold text-blue-600 hover:text-blue-500">Forgot password?</a>
+                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400">Password</label>
+                                <a href="#" className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">Forgot password?</a>
                             </div>
                             <input
                                 id="password"
                                 name="password"
                                 type="password"
                                 required
-                                className="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50/50 py-3 px-4 text-gray-900 shadow-sm transition-all focus:border-blue-500 focus:ring-blue-500 focus:bg-white sm:text-sm outline-none border ring-1 ring-gray-200"
+                                className="mt-1 block w-full rounded-xl border-gray-300 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-800 py-3 px-4 text-gray-900 dark:text-white shadow-sm transition-all focus:border-blue-500 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-900 sm:text-sm outline-none border ring-1 ring-gray-200 dark:ring-slate-700 placeholder:text-gray-400 dark:placeholder:text-slate-500"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -86,9 +86,9 @@ export default function LoginPage() {
                 </form>
 
                 <div className="mt-8 text-center">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-slate-400">
                         Don't have an account?{" "}
-                        <Link href="/signup" className="font-semibold text-blue-600 hover:text-blue-500 underline-offset-4 hover:underline">
+                        <Link href="/signup" className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 underline-offset-4 hover:underline">
                             Create one now
                         </Link>
                     </p>

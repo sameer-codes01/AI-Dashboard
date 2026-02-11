@@ -15,8 +15,8 @@ export const kpiData: {
             change: "+20.1%",
             trend: "up",
             icon: DollarSign,
-            color: "text-emerald-600",
-            bgColor: "bg-emerald-50",
+            color: "text-emerald-600 dark:text-emerald-400",
+            bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
         },
         {
             title: "Active Users",
@@ -24,8 +24,8 @@ export const kpiData: {
             change: "+180.1%",
             trend: "up",
             icon: Users,
-            color: "text-indigo-600",
-            bgColor: "bg-indigo-50",
+            color: "text-indigo-600 dark:text-indigo-400",
+            bgColor: "bg-indigo-50 dark:bg-indigo-900/20",
         },
         {
             title: "New Customers",
@@ -33,8 +33,8 @@ export const kpiData: {
             change: "+19%",
             trend: "up",
             icon: ShoppingCart,
-            color: "text-blue-600",
-            bgColor: "bg-blue-50",
+            color: "text-blue-600 dark:text-blue-400",
+            bgColor: "bg-blue-50 dark:bg-blue-900/20",
         },
         {
             title: "Bounce Rate",
@@ -42,8 +42,8 @@ export const kpiData: {
             change: "-5.4%",
             trend: "down", // Good for bounce rate
             icon: Activity,
-            color: "text-rose-600",
-            bgColor: "bg-rose-50",
+            color: "text-rose-600 dark:text-rose-400",
+            bgColor: "bg-rose-50 dark:bg-rose-900/20",
         },
     ];
 

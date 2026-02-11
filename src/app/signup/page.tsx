@@ -14,12 +14,12 @@ export default function SignUpPage() {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 px-4 py-12 sm:px-6 lg:px-8">
-            <div className="w-full max-w-md space-y-8 bg-white/95 backdrop-blur-sm p-10 rounded-2xl shadow-2xl border border-white/20">
+            <div className="w-full max-w-md space-y-8 bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm p-10 rounded-2xl shadow-2xl border border-white/20 dark:border-slate-700 transition-all">
                 <div className="text-center">
-                    <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+                    <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
                         Join the Dashboard
                     </h2>
-                    <p className="mt-3 text-sm text-gray-600">
+                    <p className="mt-3 text-sm text-gray-600 dark:text-slate-400">
                         Secure access to your SaaS analytics
                     </p>
                 </div>
@@ -27,45 +27,45 @@ export default function SignUpPage() {
                 <form className="mt-8 space-y-5" action={formAction}>
                     <div className="space-y-4">
                         <div className="group">
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 transition-colors group-focus-within:text-indigo-600">Full Name</label>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400">Full Name</label>
                             <input
                                 id="name"
                                 name="name"
                                 type="text"
                                 required
-                                className="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50/50 py-3 px-4 text-gray-900 shadow-sm transition-all focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white sm:text-sm outline-none border ring-1 ring-gray-200"
+                                className="mt-1 block w-full rounded-xl border-gray-300 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-800 py-3 px-4 text-gray-900 dark:text-white shadow-sm transition-all focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 sm:text-sm outline-none border ring-1 ring-gray-200 dark:ring-slate-700 placeholder:text-gray-400 dark:placeholder:text-slate-500"
                                 placeholder="John Doe"
                             />
                         </div>
                         <div className="group">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 transition-colors group-focus-within:text-indigo-600">Email Address</label>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400">Email Address</label>
                             <input
                                 id="email"
                                 name="email"
                                 type="email"
                                 autoComplete="email"
                                 required
-                                className="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50/50 py-3 px-4 text-gray-900 shadow-sm transition-all focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white sm:text-sm outline-none border ring-1 ring-gray-200"
+                                className="mt-1 block w-full rounded-xl border-gray-300 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-800 py-3 px-4 text-gray-900 dark:text-white shadow-sm transition-all focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 sm:text-sm outline-none border ring-1 ring-gray-200 dark:ring-slate-700 placeholder:text-gray-400 dark:placeholder:text-slate-500"
                                 placeholder="john@example.com"
                             />
                         </div>
                         <div className="group">
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 transition-colors group-focus-within:text-indigo-600">Password</label>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400">Password</label>
                             <input
                                 id="password"
                                 name="password"
                                 type="password"
                                 required
-                                className="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50/50 py-3 px-4 text-gray-900 shadow-sm transition-all focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white sm:text-sm outline-none border ring-1 ring-gray-200"
+                                className="mt-1 block w-full rounded-xl border-gray-300 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-800 py-3 px-4 text-gray-900 dark:text-white shadow-sm transition-all focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 sm:text-sm outline-none border ring-1 ring-gray-200 dark:ring-slate-700 placeholder:text-gray-400 dark:placeholder:text-slate-500"
                                 placeholder="••••••••"
                             />
                         </div>
                         <div className="group">
-                            <label htmlFor="role" className="block text-sm font-medium text-gray-700 transition-colors group-focus-within:text-indigo-600">Request Role</label>
+                            <label htmlFor="role" className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400">Request Role</label>
                             <select
                                 id="role"
                                 name="role"
-                                className="mt-1 block w-full rounded-xl border-gray-300 bg-gray-50/50 py-3 px-4 text-gray-900 shadow-sm transition-all focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white sm:text-sm outline-none border ring-1 ring-gray-200 appearance-none"
+                                className="mt-1 block w-full rounded-xl border-gray-300 dark:border-slate-600 bg-gray-50/50 dark:bg-slate-800 py-3 px-4 text-gray-900 dark:text-white shadow-sm transition-all focus:border-indigo-500 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 sm:text-sm outline-none border ring-1 ring-gray-200 dark:ring-slate-700 appearance-none"
                             >
                                 <option value="USER">Standard User</option>
                                 <option value="ADMIN">Administrator</option>
@@ -121,9 +121,9 @@ export default function SignUpPage() {
                 </form>
 
                 <div className="mt-6 text-center">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-slate-400">
                         Already have an account?{" "}
-                        <Link href="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 underline-offset-4 hover:underline">
+                        <Link href="/login" className="font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 underline-offset-4 hover:underline">
                             Sign in
                         </Link>
                     </p>

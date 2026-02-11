@@ -15,7 +15,7 @@ export default async function DashboardLayout({
     }
 
     return (
-        <div className="flex bg-slate-50 min-h-screen">
+        <div className="flex bg-slate-50 dark:bg-slate-950 min-h-screen">
             <Sidebar role={(session.user as any)?.role} />
             <div className="flex-1 ml-64 flex flex-col">
                 <Navbar />

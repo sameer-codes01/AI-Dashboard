@@ -1,57 +1,135 @@
 "use server";
 
-import { YoutubeTranscript } from 'youtube-transcript';
-import { YoutubeTranscript as YoutubeTranscriptPlus } from 'youtube-transcript-plus';
+
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
+import { Innertube, UniversalCache } from 'youtubei.js';
+import { exec } from "child_process";
+import { promisify } from "util";
+import path from "path";
+
+const execAsync = promisify(exec);
+
+
+const INVIDIOUS_INSTANCES = [
+    "https://invidious.projectsegfau.lt",
+    "https://inv.tux.pizza",
+    "https://invidious.jing.rocks",
+    "https://vid.puffyan.us",
+    "https://yt.artemislena.eu"
+];
+
 export async function extractTranscript(videoUrl: string) {
     try {
         console.log(`Extracting transcript for URL: ${videoUrl}`);
 
-        let transcriptItems;
-        try {
-            transcriptItems = await YoutubeTranscript.fetchTranscript(videoUrl);
-        } catch (primaryError) {
-            console.warn("Primary extraction failed. Attempting fallback with youtube-transcript-plus...");
-            try {
-                transcriptItems = await YoutubeTranscriptPlus.fetchTranscript(videoUrl);
-            } catch (fallbackError) {
-                console.error("Fallback extraction also failed.");
-                throw primaryError; // Re-throw the original error to be handled by the outer catch block
+        // Extract Video ID
+        const urlObj = new URL(videoUrl);
+        let videoId = urlObj.searchParams.get("v");
+        if (!videoId) {
+            // Handle Short URLs if necessary or other formats
+            if (urlObj.hostname === "youtu.be") {
+                videoId = urlObj.pathname.slice(1);
             }
         }
 
-        const transcriptText = transcriptItems.map(item => item.text).join(" ");
-        console.log(`Transcript extracted. Length: ${transcriptText.length} chars.`);
-        console.log(`Preview: ${transcriptText.substring(0, 100)}...`);
-
-        if (!transcriptText || transcriptText.trim().length === 0) {
-            throw new Error("No transcript found. Please ensure the video has closed captions (CC) availble.");
+        if (!videoId) {
+            throw new Error("Invalid YouTube URL");
         }
 
-        return {
-            success: true,
-            transcript: transcriptText,
-        };
+        console.log(`Video ID: ${videoId}`);
+
+        // 1. Try Innertube (Android Client) - usually most reliable
+        try {
+            console.log("Attempting Innertube (Android)...");
+            const youtube = await Innertube.create({
+                cache: new UniversalCache(false),
+                generate_session_locally: true
+            });
+
+            const info = await youtube.getInfo(videoId, { client: 'ANDROID' });
+
+            try {
+                const transcriptData = await info.getTranscript();
+                if (transcriptData?.transcript?.content?.body?.initial_segments) {
+                    const segments = transcriptData.transcript.content.body.initial_segments;
+                    const transcriptText = segments.map((seg: any) => seg.snippet.text).join(" ");
+
+                    console.log(`Innertube success. Length: ${transcriptText.length} chars.`);
+                    return { success: true, transcript: transcriptText };
+                }
+            } catch (innerErr: any) {
+                console.warn("Innertube getTranscript failed:", innerErr.message);
+            }
+        } catch (error: any) {
+            console.error('Innertube (Android) failed:', error.message);
+        }
+
+        // 2. Try Invidious Fallback (Privacy Instances)
+        console.log("Attempting Invidious fallback...");
+        for (const instance of INVIDIOUS_INSTANCES) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout per instance
+
+                console.log(`Trying ${instance}...`);
+                const captionsUrl = `${instance}/api/v1/captions/${videoId}`;
+                const captionsRes = await fetch(captionsUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
+                if (!captionsRes.ok) continue;
+
+                const captionsData = await captionsRes.json();
+                const enCaption = captionsData.captions?.find((c: any) => c.languageCode === 'en');
+
+                if (enCaption) {
+                    const transcriptUrl = `${instance}${enCaption.url}`;
+                    const transcriptRes = await fetch(transcriptUrl);
+                    if (transcriptRes.ok) {
+                        const transcriptText = await transcriptRes.text();
+                        // Parse VTT (simple regex)
+                        const lines = transcriptText.split('\n');
+                        const textLines = lines.filter(line => !line.includes('-->') && line.trim() !== '' && !line.match(/^\d+$/) && !line.match(/^WEBVTT/));
+                        const cleanText = textLines.join(' ');
+
+                        console.log(`Invidious success (${instance}).`);
+                        return { success: true, transcript: cleanText };
+                    }
+                }
+            } catch (e) {
+                console.warn(`Invidious instance ${instance} failed:`, e);
+            }
+        }
+
+        // 3. Try Python Script Fallback (youtube-transcript-api)
+        try {
+            console.log("Attempting Python script fallback...");
+            const scriptPath = path.join(process.cwd(), "scripts", "get-transcript.py");
+            const { stdout } = await execAsync(`python "${scriptPath}" ${videoId}`);
+            const result = JSON.parse(stdout);
+
+            if (result.success && result.transcript) {
+                console.log(`Python script success. Length: ${result.transcript.length} chars.`);
+                return { success: true, transcript: result.transcript };
+            } else {
+                console.warn("Python script returned error:", result.error);
+            }
+        } catch (pyErr: any) {
+            console.error("Python script failed:", pyErr.message);
+        }
+
+        throw new Error("No transcript found via any method (Innertube, Invidious, Python). Please ensure the video has closed captions (CC).");
+
     } catch (error: any) {
         console.error("Transcript extraction error:", error);
 
-        let errorMessage = "Failed to extract transcript.";
-        if (error.message.includes("Transcript is disabled")) {
-            errorMessage = "Transcripts are disabled for this video.";
-        } else if (error.message.includes("No transcript found")) {
-            errorMessage = error.message;
-        } else {
-            errorMessage = "Could not retrieve transcript automatically. Please use a different video or try the 'Manual Text' tab to paste the transcript directly.";
-        }
-
         return {
             success: false,
-            error: errorMessage,
+            error: error.message || "Failed to extract transcript.",
         };
     }
 }

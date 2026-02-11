@@ -14,9 +14,17 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f172a;
+    /* Slate 900 */
+    --foreground: #f8fafc;
+    /* Slate 50 */
   }
+}
+
+/* Explicit dark mode support for class strategy */
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
 }
 
 body {

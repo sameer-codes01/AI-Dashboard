@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -28,7 +28,7 @@ model User {
 model Note {
   id        String   @id @default(cuid())
   title     String
-  content   String   @db.Text
+  content   String
   videoUrl  String
   mode      String
   userId    String
