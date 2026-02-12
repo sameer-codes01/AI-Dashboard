@@ -2,6 +2,10 @@
   "name": "saas-core-dashboard",
   "version": "1.0.0",
   "description": "A modern SaaS dashboard with AI integration and dark mode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sameer-codes01/Neon_Dashboard.git"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -30,7 +34,6 @@
     "tailwind-merge": "^3.4.0",
     "ws": "^8.19.0",
     "youtube-transcript": "^1.2.1",
-    "youtube-transcript-api": "^3.0.6",
     "youtube-transcript-plus": "^1.1.2",
     "youtubei.js": "^16.0.1",
     "zod": "^4.3.6"

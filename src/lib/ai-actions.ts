@@ -23,110 +23,25 @@ const INVIDIOUS_INSTANCES = [
     "https://yt.artemislena.eu"
 ];
 
+import { YoutubeTranscript } from 'youtube-transcript-plus';
+
 export async function extractTranscript(videoUrl: string) {
     try {
         console.log(`Extracting transcript for URL: ${videoUrl}`);
 
-        // Extract Video ID
-        const urlObj = new URL(videoUrl);
-        let videoId = urlObj.searchParams.get("v");
-        if (!videoId) {
-            // Handle Short URLs if necessary or other formats
-            if (urlObj.hostname === "youtu.be") {
-                videoId = urlObj.pathname.slice(1);
-            }
+        const transcriptData = await YoutubeTranscript.fetchTranscript(videoUrl);
+
+        if (!transcriptData || transcriptData.length === 0) {
+            throw new Error("No transcript found.");
         }
 
-        if (!videoId) {
-            throw new Error("Invalid YouTube URL");
-        }
+        const transcriptText = transcriptData.map((seg: any) => seg.text).join(" ");
+        console.log(`Transcript extracted successfully. Length: ${transcriptText.length} chars.`);
 
-        console.log(`Video ID: ${videoId}`);
-
-        // 1. Try Innertube (Android Client) - usually most reliable
-        try {
-            console.log("Attempting Innertube (Android)...");
-            const youtube = await Innertube.create({
-                cache: new UniversalCache(false),
-                generate_session_locally: true
-            });
-
-            const info = await youtube.getInfo(videoId, { client: 'ANDROID' });
-
-            try {
-                const transcriptData = await info.getTranscript();
-                if (transcriptData?.transcript?.content?.body?.initial_segments) {
-                    const segments = transcriptData.transcript.content.body.initial_segments;
-                    const transcriptText = segments.map((seg: any) => seg.snippet.text).join(" ");
-
-                    console.log(`Innertube success. Length: ${transcriptText.length} chars.`);
-                    return { success: true, transcript: transcriptText };
-                }
-            } catch (innerErr: any) {
-                console.warn("Innertube getTranscript failed:", innerErr.message);
-            }
-        } catch (error: any) {
-            console.error('Innertube (Android) failed:', error.message);
-        }
-
-        // 2. Try Invidious Fallback (Privacy Instances)
-        console.log("Attempting Invidious fallback...");
-        for (const instance of INVIDIOUS_INSTANCES) {
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout per instance
-
-                console.log(`Trying ${instance}...`);
-                const captionsUrl = `${instance}/api/v1/captions/${videoId}`;
-                const captionsRes = await fetch(captionsUrl, { signal: controller.signal });
-                clearTimeout(timeoutId);
-
-                if (!captionsRes.ok) continue;
-
-                const captionsData = await captionsRes.json();
-                const enCaption = captionsData.captions?.find((c: any) => c.languageCode === 'en');
-
-                if (enCaption) {
-                    const transcriptUrl = `${instance}${enCaption.url}`;
-                    const transcriptRes = await fetch(transcriptUrl);
-                    if (transcriptRes.ok) {
-                        const transcriptText = await transcriptRes.text();
-                        // Parse VTT (simple regex)
-                        const lines = transcriptText.split('\n');
-                        const textLines = lines.filter(line => !line.includes('-->') && line.trim() !== '' && !line.match(/^\d+$/) && !line.match(/^WEBVTT/));
-                        const cleanText = textLines.join(' ');
-
-                        console.log(`Invidious success (${instance}).`);
-                        return { success: true, transcript: cleanText };
-                    }
-                }
-            } catch (e) {
-                console.warn(`Invidious instance ${instance} failed:`, e);
-            }
-        }
-
-        // 3. Try Python Script Fallback (youtube-transcript-api)
-        try {
-            console.log("Attempting Python script fallback...");
-            const scriptPath = path.join(process.cwd(), "scripts", "get-transcript.py");
-            const { stdout } = await execAsync(`python "${scriptPath}" ${videoId}`);
-            const result = JSON.parse(stdout);
-
-            if (result.success && result.transcript) {
-                console.log(`Python script success. Length: ${result.transcript.length} chars.`);
-                return { success: true, transcript: result.transcript };
-            } else {
-                console.warn("Python script returned error:", result.error);
-            }
-        } catch (pyErr: any) {
-            console.error("Python script failed:", pyErr.message);
-        }
-
-        throw new Error("No transcript found via any method (Innertube, Invidious, Python). Please ensure the video has closed captions (CC).");
+        return { success: true, transcript: transcriptText };
 
     } catch (error: any) {
         console.error("Transcript extraction error:", error);
-
         return {
             success: false,
             error: error.message || "Failed to extract transcript.",
