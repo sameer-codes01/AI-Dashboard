@@ -1,34 +1,17 @@
-const fs = require('fs');
+require('dotenv').config();
 
-console.log('🔍 Checking Environment Variables...');
+console.log("Checking Environment Variables...");
 
-const hasDatabaseUrl = !!process.env.DATABASE_URL;
-const hasVercelUrl = !!process.env.POSTGRES_PRISMA_URL;
+const key = process.env.GEMINI_API_KEY;
 
-if (hasDatabaseUrl) {
-    console.log('✅ DATABASE_URL is set.');
-} else if (hasVercelUrl) {
-    console.warn('⚠️  POSTGRES_PRISMA_URL found, but DATABASE_URL is missing!');
-    console.warn('   Prisma needs DATABASE_URL.');
-    console.warn('   👉 ACTION: Go to Vercel Settings -> Environment Variables.');
-    console.warn('   👉 Create "DATABASE_URL" and paste the value of "POSTGRES_PRISMA_URL".');
-    // We don't exit(1) here because maybe they strictly use the other one in a modified schema, 
-    // but for this project we want to force it or at least scream loudly.
-    console.error('❌ ERROR: Missing DATABASE_URL. The app will fail at runtime.');
-    process.exit(1);
+if (key) {
+    console.log("✅ GEMINI_API_KEY is found.");
+    console.log(`Key length: ${key.length}`);
+    console.log(`First 4 chars: ${key.substring(0, 4)}`);
+    console.log(`Last 4 chars: ${key.substring(key.length - 4)}`);
 } else {
-    console.error('❌ ERROR: DATABASE_URL is missing!');
-    console.error('   The app cannot connect to the database.');
-    console.error('   👉 ACTION: Create a Database in Vercel (Storage tab) or add a PostgreSQL connection string.');
-    process.exit(1);
+    console.error("❌ GEMINI_API_KEY is NOT found or empty.");
 }
 
-const hasAuthSecret = !!process.env.AUTH_SECRET;
-if (!hasAuthSecret) {
-    console.error('❌ ERROR: AUTH_SECRET is missing!');
-    console.error('   Required for NextAuth.');
-    console.error('   👉 ACTION: Add AUTH_SECRET to Vercel Environment Variables.');
-    process.exit(1);
-}
-
-console.log('✅ Environment checks passed!');
+console.log("\nChecking for potential conflicts:");
+console.log("GOOGLE_API_KEY:", process.env.GOOGLE_API_KEY ? "Found" : "Not Found");
