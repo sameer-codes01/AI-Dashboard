@@ -7,7 +7,7 @@ Thank you for your interest in contributing to our project! We welcome contribut
 1.  **Fork the repository**: Click the "Fork" button at the top right of this page.
 2.  **Clone your fork**:
     ```bash
-    git clone https://github.com/your-username/AC-Dashboard.git
+    git clone https://github.com/your-username/AI-Dashboard.git
     ```
 3.  **Create a branch**:
     ```bash

@@ -20,8 +20,8 @@ A modern, high-performance SaaS Dashboard built with **Next.js 15**, **React 19*
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/sameer-codes01/AC-Dashboard.git
-    cd AC-Dashboard
+    git clone https://github.com/sameer-codes01/AI-Dashboard.git
+    cd AI-Dashboard
     ```
 
 2.  **Install dependencies**:
