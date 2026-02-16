@@ -1,59 +1,36 @@
-# Vercel Setup Guide: Fixing the Database Connection
+# Vercel Setup Guide: Deploying AI Dashboard
 
-The error `Environment variable not found: DATABASE_URL` means Vercel does not know where your database is. You cannot use your local SQLite file (`dev.db`) on Vercel.
+Follow these steps to deploy your project to Vercel and connect your database and AI services.
 
-**Follow these steps exactly to fix it.**
+## Step 1: Push to GitHub
+1.  Ensure all your changes are pushed to your repository: `https://github.com/sameer-codes01/AI-Dashboard.git`.
 
-## Step 1: Create a Database on Vercel
+## Step 2: Import Project to Vercel
+1.  Go to your **[Vercel Dashboard](https://vercel.com/new)**.
+2.  Click **Import** next to your `AI-Dashboard` repository.
 
-1.  Go to your **[Vercel Dashboard](https://vercel.com/dashboard)**.
-2.  Select your project (`ai-dashboard` or similar).
-3.  Click the **Storage** tab at the top.
-4.  Click **Create Database** -> Use **Vercel Postgres** (or Neon).
-5.  Accept the terms and click **Create**.
-6.  Once created, click **"Connect Project"** and select your project.
-7.  **IMPORTANT:** Verify that Vercel automatically added the Environment Variables:
-    *   Go to **Settings** -> **Environment Variables**.
-    *   Look for `POSTGRES_PRISMA_URL` or `POSTGRES_URL`.
+## Step 3: Configure Environment Variables
+In the **Environment Variables** section during setup (or in **Settings** -> **Environment Variables** after import), add the following:
 
-## Step 2: Set the `DATABASE_URL` Variable
+| Key | Value | Description |
+| :--- | :--- | :--- |
+| `DATABASE_URL` | `postgresql://...` | Your Neon DB connection string. |
+| `AUTH_SECRET` | `fc9480c5763567d16377e8a939109439` | A secure random string for authentication. |
+| `AUTH_TRUST_HOST` | `true` | Required for NextAuth on Vercel. |
+| `GEMINI_API_KEY` | `AIza...` | Your Google Gemini API Key. |
+| `GROQ_API_KEY` | `gsk_...` | Your Groq API Key (for Document QA). |
 
-Prisma specifically looks for a variable named `DATABASE_URL`.
+## Step 4: Deploy
+1.  Click **Deploy**.
+2.  Wait for the build and deployment to complete.
 
-1.  In **Settings** -> **Environment Variables**, check if `DATABASE_URL` exists.
-2.  **If it exists**: You are good.
-3.  **If it does NOT exist**:
-    *   Find the value for `POSTGRES_PRISMA_URL` (it starts with `postgres://...`).
-    *   Copy that entire value.
-    *   Create a *new* variable:
-        *   **Key**: `DATABASE_URL`
-        *   **Value**: (Paste the `POSTGRES_PRISMA_URL` value you copied).
-    *   Click **Save**.
+## Step 5: Database Migration
+Since you are using Prisma with a live database (Neon), you need to ensure the schema is applied.
+1.  Vercel usually runs `prisma generate` during build if it's in your `postinstall` script.
+2.  If the database is empty, you may need to run `npx prisma db push` from your local machine once, pointing to your live `DATABASE_URL`.
 
-## Step 3: Add Other Required Variables
+## Step 6: Create a New Account
+1.  Go to your live site URL (e.g., `https://ai-dashboard-xxx.vercel.app`).
+2.  Click **Sign Up** and create a fresh account to verify everything is working.
 
-While you are there, ensure these are also set:
-
-1.  **`AUTH_SECRET`**:
-    *   **Value**: `fc9480c5763567d16377e8a939109439` (or any long random string).
-2.  **`AUTH_TRUST_HOST`**:
-    *   **Value**: `true`
-3.  **`GEMINI_API_KEY`**:
-    *   **Value**: (Your Gemini API Key starting with `AIza...`).
-
-## Step 4: Redeploy (Essential!)
-
-Changing variables does **not** update the live site instantly.
-
-1.  Go to the **Deployments** tab.
-2.  Find the most recent deployment (the top one).
-3.  Click the **three dots (...)** on the right -> **Redeploy**.
-4.  Wait for the build to finish.
-
-## Step 5: Create a New Account
-
-1.  Go to your live site URL.
-2.  Click **Sign Up** (Do not try to login with your local account).
-3.  Create a fresh account.
-
-**You should now be able to log in!**
+**Congratulations! Your AI Dashboard is now live!**
