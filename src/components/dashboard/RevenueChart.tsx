@@ -16,7 +16,7 @@ import { revenueData } from "@/data/dashboard-data";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-export function RevenueChart() {
+export function RevenueChart({ data }: { data?: any[] }) {
     const { theme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
@@ -36,7 +36,7 @@ export function RevenueChart() {
             </div>
             <ResponsiveContainer width="100%" height="85%">
                 <AreaChart
-                    data={revenueData}
+                    data={data && data.length > 0 ? data : revenueData}
                     margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
                 >
                     <defs>

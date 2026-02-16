@@ -23,6 +23,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   notes         Note[]
+  documents     Document[]
 }
 
 model Note {
@@ -35,4 +36,24 @@ model Note {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  name      String
+  content   String   // Extracted text content
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  chats     Chat[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Chat {
+  id         String    @id @default(cuid())
+  text       String
+  role       String    // 'user' or 'assistant'
+  documentId String
+  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
 }

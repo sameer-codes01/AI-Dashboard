@@ -15,7 +15,7 @@ import { userActivityData } from "@/data/dashboard-data";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-export function ActivityChart() {
+export function ActivityChart({ data }: { data?: any[] }) {
     const { theme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
@@ -35,7 +35,7 @@ export function ActivityChart() {
             </div>
             <ResponsiveContainer width="100%" height="85%">
                 <BarChart
-                    data={userActivityData}
+                    data={data && data.length > 0 ? data : userActivityData}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#334155" : "#e2e8f0"} />

@@ -6,6 +6,7 @@ A modern, high-performance SaaS Dashboard built with **Next.js 15**, **React 19*
 
 ## 🚀 Features
 
+- **📄 Document Intelligence**: PDF and Text file analysis with AI-powered Q&A features.
 - **🎨 Verified Glassmorphism UI**: Beautiful, translucent design with vibrant neon accents and smooth animations.
 - **🌑 Dark Mode Support**: Fully integrated dark theme with a toggle switch, persisting user preference.
 - **🤖 AI Summarizer**: Intelligent YouTube video summarizer powered by Google Gemini AI.
@@ -13,14 +14,14 @@ A modern, high-performance SaaS Dashboard built with **Next.js 15**, **React 19*
 - **📊 Interactive Charts**: Dynamic data visualization using Recharts.
 - **👥 Admin Panel**: User management, status toggling, and system settings.
 - **💳 Plan Management**: Billing page with pricing tiers (Free, Pro, Enterprise).
-- **⚡ Tech Stack**: Next.js 15, Neon DB (PostgreSQL), Prisma ORM, Tailwind CSS v4.
+- **⚡ Tech Stack**: Next.js 15, Neon DB (PostgreSQL), Prisma ORM, Tailwind CSS v4, Groq SDK.
 
 ## 🛠️ Getting Started
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/sameer-codes01/Neon_Dashboard.git
-    cd Neon_Dashboard
+    git clone https://github.com/sameer-codes01/AC-Dashboard.git
+    cd AC-Dashboard
     ```
 
 2.  **Install dependencies**:
@@ -34,6 +35,7 @@ A modern, high-performance SaaS Dashboard built with **Next.js 15**, **React 19*
     DATABASE_URL="postgresql://..."
     AUTH_SECRET="..."
     GOOGLE_API_KEY="..."
+    GROQ_API_KEY="..."
     ```
 
 4.  **Run the development server**:
