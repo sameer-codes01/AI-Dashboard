@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, Settings, LogOut, BarChart3, ShieldCheck, PieChart, Video, Sparkles, FileText } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, LogOut, BarChart3, ShieldCheck, PieChart, Video, Sparkles, FileText, Folder } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
 export function Sidebar({ role }: { role: string }) {
@@ -10,6 +10,7 @@ export function Sidebar({ role }: { role: string }) {
 
     const navItems = [
         { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+        { name: 'Workspaces', href: '/dashboard/workspaces', icon: Folder, isPro: true },
         { name: 'AI Summarizer', href: '/dashboard/ai-summarizer', icon: Video, isPro: true },
         { name: 'Document QA', href: '/dashboard/documents', icon: FileText, isPro: true },
         { name: 'Analytics', href: '/dashboard/analytics', icon: PieChart },

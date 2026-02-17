@@ -6,11 +6,13 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  extensions = [vector]
 }
 
 model User {
@@ -24,6 +26,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   notes         Note[]
   documents     Document[]
+  workspaces    Workspace[]
 }
 
 model Note {
@@ -39,21 +42,46 @@ model Note {
 }
 
 model Document {
-  id        String   @id @default(cuid())
+  id          String         @id @default(cuid())
+  name        String
+  content     String   // Extracted text content (optional if we rely on chunks, but good for full retrieval)
+  userId      String
+  user        User           @relation(fields: [userId], references: [id])
+  workspaceId String?
+  workspace   Workspace?     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  chunks      DocumentChunk[]
+  chats       Chat[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model Workspace {
+  id        String     @id @default(cuid())
   name      String
-  content   String   // Extracted text content
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents Document[]
   chats     Chat[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model DocumentChunk {
+  id         String                 @id @default(cuid())
+  content    String
+  embedding  Unsupported("vector(3072)")? 
+  documentId String
+  document   Document               @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  createdAt  DateTime               @default(now())
 }
 
 model Chat {
   id         String    @id @default(cuid())
   text       String
   role       String    // 'user' or 'assistant'
-  documentId String
-  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId String?
+  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  workspaceId String?
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   createdAt  DateTime  @default(now())
 }
