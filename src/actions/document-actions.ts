@@ -5,7 +5,8 @@ import prisma from "../lib/prisma";
 import { revalidatePath } from "next/cache";
 import { auth } from "../auth";
 import { generateEmbedding } from "../lib/vector-store";
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+// @ts-ignore
+import pdf from "pdf-parse/lib/pdf-parse.js";
 
 // Simple chunking function - kept same
 function chunkText(text: string, chunkSize: number = 1000, overlap: number = 200): string[] {
@@ -33,32 +34,11 @@ export async function uploadDocument(workspaceId: string, formData: FormData) {
     let text = "";
     if (file.type === "application/pdf") {
         const arrayBuffer = await file.arrayBuffer();
-        // Use Uint8Array for pdfjs-dist
-        const data = new Uint8Array(arrayBuffer);
+        const buffer = Buffer.from(arrayBuffer);
 
         try {
-            const loadingTask = pdfjsLib.getDocument({
-                data,
-                // These options help in Node environment
-                disableFontFace: true,
-                useSystemFonts: false,
-                isEvalSupported: false
-            });
-            const doc = await loadingTask.promise;
-
-            const numPages = doc.numPages;
-            const textParts = [];
-
-            for (let i = 1; i <= numPages; i++) {
-                const page = await doc.getPage(i);
-                const textContent = await page.getTextContent();
-                const pageText = textContent.items
-                    // @ts-ignore
-                    .map((item) => item.str)
-                    .join(" ");
-                textParts.push(pageText);
-            }
-            text = textParts.join("\n");
+            const data = await pdf(buffer);
+            text = data.text;
         } catch (err: any) {
             console.error("PDF extraction error:", err);
             // Throw original error message to help debugging

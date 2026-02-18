@@ -11,11 +11,15 @@ const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY,
 });
 
-export async function chatWithWorkspace(workspaceId: string, message: string) {
+import { searchWeb } from "../lib/firecrawl";
+
+export async function chatWithWorkspace(workspaceId: string, message: string, useDeepSearch: boolean = false) {
     const session = await auth();
     if (!session?.user?.id) {
+        console.log("Chat: Unauthorized access attempt");
         return { success: false, error: "Unauthorized." };
     }
+    console.log("Chat: Starting chat", { workspaceId, useDeepSearch });
 
     try {
         // 1. Save User Message
@@ -30,34 +34,53 @@ export async function chatWithWorkspace(workspaceId: string, message: string) {
         // 2. Generate Embedding for Query
         const embedding = await generateEmbedding(message);
 
-        // 3. Find Similar Chunks
+        // 3. Find Similar Chunks (Document Context)
         const similarChunks = await findSimilarChunks(embedding, workspaceId);
 
-        // 4. Construct Context from Chunks
-        // format: "Document: <name>\nContent: <content>\n\n"
-        const context = similarChunks.map(chunk =>
-            `Source: ${chunk.document.name}\nContent: ${chunk.content}`
-        ).join("\n\n---\n\n");
+        let context = "";
+
+        // Add Document Context
+        if (similarChunks.length > 0) {
+            context += "### DOCUMENT CONTEXT:\n";
+            context += similarChunks.map(chunk =>
+                `Source: ${chunk.documentName}\nContent: ${chunk.content}`
+            ).join("\n\n---\n\n");
+            context += "\n\n";
+        }
+
+        // 4. Deep Search (Web Context)
+        if (useDeepSearch) {
+            console.log("Chat: Performing Deep Search...");
+            const webResults = await searchWeb(message);
+            if (webResults.length > 0) {
+                context += "### WEB SEARCH CONTEXT:\n";
+                context += webResults.map(result =>
+                    `Source: ${result.title} (${result.url})\nContent: ${result.content || result.description}`
+                ).join("\n\n---\n\n");
+                context += "\n\n";
+            }
+        }
 
         if (!context) {
-            // No context found, but we should still answer or say we don't know
-            // Let's fallback to just answering without context if simple greeting, but strict for RAG
+            // No context found
         }
 
         // 5. Generate Answer with LLM
         const systemPrompt = `You are a helpful AI assistant for a document workspace.
-        Use the following retrieved context to answer the user's question.
+        Use the provided context (Documents and/or Web Search) to answer the user's question.
         
         Rules:
         1. Answer based ONLY on the provided context. 
-        2. If the answer is not in the context, say "I couldn't find the information in the workspace documents."
-        3. Cite the source document names when answering (e.g., "According to [Document Name]...").
-        4. Keep the answer concise and helpful.
+        2. If the answer is not in the context, say "I couldn't find the information."
+        3. Cite the source (Document Name or Web URL) when answering.
+        4. If using Web Search, explicitly mention "According to web sources...".
+        5. Keep the answer concise and helpful.
 
         CONTEXT:
         ${context}
         `;
 
+        console.log("Chat: Sending request to LLM...");
         const chatCompletion = await groq.chat.completions.create({
             messages: [
                 { role: "system", content: systemPrompt },
@@ -67,22 +90,24 @@ export async function chatWithWorkspace(workspaceId: string, message: string) {
         });
 
         const answer = chatCompletion.choices[0]?.message?.content || "I couldn't generate a response.";
+        console.log("Chat: Received LLM response");
 
         // 6. Save Assistant Response
         const assistantMessage = await prisma.chat.create({
             data: {
                 text: answer,
-                role: "assistant", // Using 'assistant' to match schema comment, though sometimes 'system' is used in DB
+                role: "assistant",
                 workspaceId: workspaceId,
             },
         });
 
         revalidatePath(`/dashboard/workspaces/${workspaceId}`);
+        console.log("Chat: Success");
         return { success: true, userMessage, assistantMessage };
 
     } catch (error: any) {
         console.error("Chat error:", error);
-        return { success: false, error: "Failed to process chat." };
+        return { success: false, error: `Chat failed: ${error.message}` };
     }
 }
 

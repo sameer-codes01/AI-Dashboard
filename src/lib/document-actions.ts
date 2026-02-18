@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 // @ts-ignore
-import pdf from "pdf-parse/lib/pdf-parse.js";
+import pdf from "pdf-parse";
 import { revalidatePath } from "next/cache";
 
 

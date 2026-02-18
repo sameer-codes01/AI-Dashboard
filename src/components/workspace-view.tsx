@@ -31,6 +31,7 @@ export default function WorkspaceView({ workspaceId, initialDocuments, initialCh
     const [documents, setDocuments] = useState<Document[]>(initialDocuments);
     const [chats, setChats] = useState<any[]>(initialChats);
     const [question, setQuestion] = useState("");
+    const [useDeepSearch, setUseDeepSearch] = useState(false);
     const [loadingChat, setLoadingChat] = useState(false);
     const [uploading, setUploading] = useState(false); // Managed by this component or sub-component
     const [sending, setSending] = useState(false);
@@ -166,7 +167,7 @@ export default function WorkspaceView({ workspaceId, initialDocuments, initialCh
                                     <FileText className="w-4 h-4 text-indigo-500 flex-shrink-0" />
                                     <div className="overflow-hidden">
                                         <p className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{doc.name}</p>
-                                        <p className="text-[10px] text-slate-500">{new Date(doc.createdAt).toLocaleDateString()}</p>
+                                        <p className="text-[10px] text-slate-500">{new Date(doc.createdAt).toISOString().split('T')[0]}</p>
                                     </div>
                                 </div>
                                 <button onClick={(e) => handleDeleteDoc(doc.id, e)} className="text-slate-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -198,12 +199,14 @@ export default function WorkspaceView({ workspaceId, initialDocuments, initialCh
                                 </div>
                                 <div className={`flex flex-col max-w-[80%] ${chat.role === "user" ? "items-end" : "items-start"}`}>
                                     <div className={`p-4 rounded-2xl text-sm leading-relaxed ${chat.role === "user"
-                                            ? "bg-indigo-600 text-white rounded-tr-none"
-                                            : "bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-tl-none"
+                                        ? "bg-indigo-600 text-white rounded-tr-none"
+                                        : "bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-tl-none"
                                         }`}>
-                                        <ReactMarkdown className="prose prose-sm dark:prose-invert max-w-none">
-                                            {chat.text}
-                                        </ReactMarkdown>
+                                        <div className="prose prose-sm dark:prose-invert max-w-none">
+                                            <ReactMarkdown>
+                                                {chat.text}
+                                            </ReactMarkdown>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -235,13 +238,26 @@ export default function WorkspaceView({ workspaceId, initialDocuments, initialCh
                         </div>
                     )}
                     <form onSubmit={handleAskQuestion} className="relative">
+                        <div className="absolute left-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="deepSearch"
+                                checked={useDeepSearch}
+                                onChange={(e) => setUseDeepSearch(e.target.checked)}
+                                className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
+                            />
+                            <label htmlFor="deepSearch" className="text-xs font-medium text-slate-500 dark:text-slate-400 select-none cursor-pointer flex items-center gap-1">
+                                <Search className="w-3 h-3" />
+                                Deep Search
+                            </label>
+                        </div>
                         <input
                             type="text"
                             value={question}
                             onChange={(e) => setQuestion(e.target.value)}
                             placeholder="Ask across all documents..."
                             disabled={sending}
-                            className="w-full pl-6 pr-32 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-slate-900 dark:text-white"
+                            className="w-full pl-36 pr-32 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-slate-900 dark:text-white"
                         />
                         <button
                             type="submit"

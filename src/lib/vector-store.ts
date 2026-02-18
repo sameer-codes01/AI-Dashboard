@@ -14,7 +14,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
 
 // Because pgvector is an extension, we need raw SQL to query it properly with Prisma until fully supported typed API is stable.
 // We accepted `Unsupported("vector(768)")` in schema.
-export async function findSimilarChunks(embedding: number[], workspaceId: string): Promise<(DocumentChunk & { similarity: number, document: { name: string } })[]> {
+export async function findSimilarChunks(embedding: number[], workspaceId: string): Promise<(DocumentChunk & { similarity: number, documentName: string })[]> {
   // Convert embedding array to string format for pgvector: '[1,2,3]'
   const vectorString = `[${embedding.join(',')}]`;
 
@@ -25,7 +25,7 @@ export async function findSimilarChunks(embedding: number[], workspaceId: string
         "DocumentChunk".id, 
         "DocumentChunk".content, 
         "DocumentChunk"."documentId",
-        "Document".name as documentName,
+        "Document".name as "documentName",
         1 - ("DocumentChunk".embedding <=> ${vectorString}::vector) as similarity
       FROM "DocumentChunk"
       JOIN "Document" ON "DocumentChunk"."documentId" = "Document".id
@@ -34,5 +34,6 @@ export async function findSimilarChunks(embedding: number[], workspaceId: string
       LIMIT 5;
     `;
 
-  return chunks as (DocumentChunk & { similarity: number, document: { name: string } })[];
+  console.log("Vector Store: Raw chunks sample:", (chunks as any)[0]);
+  return chunks as (DocumentChunk & { similarity: number, documentName: string })[];
 }

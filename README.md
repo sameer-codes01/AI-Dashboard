@@ -7,6 +7,7 @@ A modern, high-performance SaaS Dashboard built with **Next.js 15**, **React 19*
 ## 🚀 Features
 
 - **📄 Document Intelligence**: PDF and Text file analysis with AI-powered Q&A features.
+- **🔍 Deep Search**: Integrated web search using Firecrawl to augment document knowledge with real-time web data.
 - **🎨 Verified Glassmorphism UI**: Beautiful, translucent design with vibrant neon accents and smooth animations.
 - **🌑 Dark Mode Support**: Fully integrated dark theme with a toggle switch, persisting user preference.
 - **🤖 AI Summarizer**: Intelligent YouTube video summarizer powered by Google Gemini AI.
